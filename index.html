@@ -279,6 +279,8 @@ html.has-cur input, html.has-cur textarea { cursor: text; }
 .total .u { font-size: 14px; color: var(--muted); }
 .note-s { font-size: 12px; color: var(--muted); }
 .summary .pill { width: 100%; }
+.summary .pill.ghost { min-height: 46px; }
+.pay-note { text-align: center; margin-top: -4px; }
 .disabled-x { opacity: .4; pointer-events: none; }
 @media (max-width: 960px) { .cfg { grid-template-columns: minmax(0, 1fr); } .summary { position: static; } .pricing h2 { font-size: clamp(44px, 12vw, 64px); } }
 
@@ -503,12 +505,14 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
           <div class="extra"><div><div class="nm">Scene AI in più</div><div class="pr">20 € ciascuna</div></div><div class="stepper"><button type="button" data-step="scene" data-d="-1" aria-label="Togli una scena">−</button><output id="o-scene">0</output><button type="button" data-step="scene" data-d="1" aria-label="Aggiungi una scena">+</button></div></div>
           <div class="extra"><div><div class="nm">Formati in più</div><div class="pr">20 € ciascuno</div></div><div class="stepper"><button type="button" data-step="fmt" data-d="-1" aria-label="Togli un formato">−</button><output id="o-fmt">0</output><button type="button" data-step="fmt" data-d="1" aria-label="Aggiungi un formato">+</button></div></div>
           <div class="extra"><div><div class="nm">Revisioni in più</div><div class="pr">25 € ciascuna</div></div><div class="stepper"><button type="button" data-step="rev" data-d="-1" aria-label="Togli una revisione">−</button><output id="o-rev">0</output><button type="button" data-step="rev" data-d="1" aria-label="Aggiungi una revisione">+</button></div></div>
-          <div class="extra"><div><div class="nm">Consegna in 48 ore</div><div class="pr">+30%</div></div><button type="button" class="switch" id="sw-rush" role="switch" aria-checked="false" aria-label="Consegna in 48 ore"></button></div>
+          <div class="extra"><div><div class="nm">Consegna in 48 ore</div><div class="pr">+30% del pacchetto</div></div><button type="button" class="switch" id="sw-rush" role="switch" aria-checked="false" aria-label="Consegna in 48 ore"></button></div>
           <div class="extra" id="x-locale" hidden><div><div class="nm">Girato nel tuo locale</div><div class="pr">+50 € · da 5 foto che ci mandi</div></div><button type="button" class="switch" id="sw-locale" role="switch" aria-checked="false" aria-label="Girato nel tuo locale"></button></div>
         </div>
         <div class="total"><span class="u" id="sum-unit">Totale</span><span class="v" id="sum-total">199 €</span></div>
         <p class="note-s" id="sum-note">Prezzi IVA esclusa.</p>
-        <a class="pill gold" href="#contatti" id="sum-cta">Richiedi questo preventivo</a>
+        <a class="pill gold" id="sum-pay" href="#prezzi" target="_blank" rel="noopener" hidden>Paga ora</a>
+        <a class="pill ghost" href="#contatti" id="sum-cta">Richiedi questo preventivo</a>
+        <p class="note-s pay-note" id="pay-note" hidden>Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Gli extra che hai scelto li aggiungi nel checkout.</p>
       </aside>
     </div>
   </section>
@@ -749,6 +753,21 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
         { id: 'vetrina', name: 'Sito vetrina', price: 690, unit: '', items: ['Fino a 5 pagine', '2 giri di modifiche', 'Manutenzione 30 €/mese'], extras: false }
       ]
     };
+    // link di pagamento Stripe per pacchetto (checkout ospitato da Stripe; gli extra sono articoli opzionali nel checkout)
+    const STRIPE = {
+      start: 'https://buy.stripe.com/dRmdRbb4caYJ5aZb5E00003',
+      pro: 'https://buy.stripe.com/bJe4gB4FOc2Navj0r000002',
+      cinema: 'https://buy.stripe.com/4gM28tgow4AlgTHb5E00001',
+      premium: 'https://buy.stripe.com/7sY7sNb4c0k546V0r000004',
+      pack3: 'https://buy.stripe.com/fZucN70py0k51YN3Dc00005',
+      social: 'https://buy.stripe.com/00wdRbc8gfeZdHv8Xw0000a',
+      mensile: 'https://buy.stripe.com/28E9AVego4Al0UJ8Xw0000b',
+      completo: 'https://buy.stripe.com/4gM5kF2xG7MxfPDflU0000c',
+      logo: 'https://buy.stripe.com/bJe14p7S0eaVcDr5Lk00006',
+      brand: 'https://buy.stripe.com/00w28t8W48QB0UJa1A00007',
+      landing: 'https://buy.stripe.com/bJebJ3dckfeZgTHehQ00008',
+      vetrina: 'https://buy.stripe.com/aFa5kF3BK1o9dHvb5E00009'
+    };
     const box = document.getElementById('plans');
     const st = { tab: 'spot', plan: 'pro', scene: 0, fmt: 0, rev: 0, rush: false, locale: false };
     const fmtEUR = v => (Math.round(v * 100) / 100).toLocaleString('it-IT', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
@@ -782,11 +801,21 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
       document.getElementById('sw-rush').setAttribute('aria-checked', st.rush ? 'true' : 'false');
       document.getElementById('sw-locale').setAttribute('aria-checked', st.locale ? 'true' : 'false');
       let tot = p.price + st.scene * 20 + st.fmt * 20 + st.rev * 25 + (st.locale ? 50 : 0);
-      if (st.rush) tot *= 1.3;
+      if (st.rush) tot += Math.round(p.price * 0.3);
       document.getElementById('sum-name').textContent = p.name;
       document.getElementById('sum-unit').textContent = p.unit ? 'Totale al mese' : 'Totale';
       animateTo(tot, document.getElementById('sum-total'));
       document.getElementById('sum-note').textContent = p.extras ? 'Prezzi IVA esclusa.' : 'Prezzi IVA esclusa. Gli extra sono disponibili sugli spot singoli.';
+      // pulsante "Paga ora": apre il checkout Stripe del pacchetto, con un riferimento alla configurazione scelta
+      const pay = document.getElementById('sum-pay'), pn = document.getElementById('pay-note'), link = STRIPE[p.id];
+      const hasExtra = st.scene || st.fmt || st.rev || st.rush || st.locale;
+      pay.hidden = pn.hidden = !link;
+      if (link) {
+        pay.textContent = p.unit ? `Attiva · ${fmtEUR(tot)}/mese` : `Paga ora · ${fmtEUR(tot)}`;
+        const ref = [p.id, st.scene && `scene${st.scene}`, st.fmt && `formati${st.fmt}`, st.rev && `revisioni${st.rev}`, st.rush && '48ore', st.locale && 'locale'].filter(Boolean).join('_');
+        pay.href = `${link}?client_reference_id=${encodeURIComponent(ref.slice(0, 200))}&locale=it`;
+        pn.textContent = hasExtra ? 'Pagamento sicuro con Stripe. Nel checkout aggiungi gli extra che hai scelto qui: li trovi già pronti.' : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
+      }
     }
     function setTab(tab, plan) {
       st.tab = tab; st.plan = plan || PLANS[tab][tab === 'spot' ? 1 : (tab === 'mese' ? 2 : 0)].id;
