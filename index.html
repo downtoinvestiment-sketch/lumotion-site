@@ -116,9 +116,9 @@ html.has-cur input, html.has-cur textarea { cursor: text; }
 .manifesto .meta { display: flex; justify-content: center; gap: 26px; flex-wrap: wrap; margin-top: 7vh; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .manifesto .w { color: var(--gold-hi); } }
 
-/* ---------- 3. film: tre passi, lo schermo video a tutta altezza a destra ---------- */
+/* ---------- 3. film: quattro passi, lo schermo video a tutta altezza a destra ---------- */
 .pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.story { height: 360vh; }
+.story { height: 460vh; }
 .story .pin { --panel: min(46vw, calc(100svh * 9 / 16 + 60px)); display: grid; grid-template-columns: minmax(0, 1fr) var(--panel); align-items: stretch; }
 .story-screen { position: relative; z-index: 1; isolation: isolate; grid-column: 2; grid-row: 1; height: 100%; overflow: hidden; background: #000; }
 .story-screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s ease; }
@@ -144,7 +144,7 @@ html.has-cur input, html.has-cur textarea { cursor: text; }
 .story-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .story-meta span { padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; }
 @media (max-width: 860px) {
-  .story { height: 300vh; }
+  .story { height: 380vh; }
   .story .pin { grid-template-columns: minmax(0, 1fr); grid-template-rows: 44svh minmax(0, 1fr); }
   .story-screen { grid-column: 1; grid-row: 1; }
   .story-fade { background: linear-gradient(to top, var(--ink) 0%, rgba(5,5,5,0) 34%), linear-gradient(to bottom, rgba(5,5,5,.75), rgba(5,5,5,0) 30%); }
@@ -375,11 +375,11 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
     <div class="meta"><span>Video AI</span><span>Social</span><span>Siti web</span></div>
   </section>
 
-  <!-- 3. FILM: tre passi -->
+  <!-- 3. FILM: quattro passi -->
   <section class="story" id="film" aria-label="I nostri film" data-shape="truck">
     <div class="pin">
       <div class="story-left gut">
-        <div class="story-head"><div class="story-steps" aria-hidden="true"><i class="on"></i><i></i><i></i></div><span id="story-label">Scorri per cambiare film</span></div>
+        <div class="story-head"><div class="story-steps" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div><span id="story-label">Scorri per cambiare film</span></div>
         <div class="story-texts">
           <article class="story-text on">
             <p class="kicker">01 · Progetto reale · Genova</p>
@@ -389,14 +389,21 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
             <button class="pill gold" type="button" data-open-player data-src="media/rt-full.mp4" data-poster="media/rt-poster.jpg" data-title="Spot di Roberto Traslochi"><svg aria-hidden="true"><use href="#play"></use></svg>Guarda con l'audio</button>
           </article>
           <article class="story-text">
-            <p class="kicker">02 · Spot dimostrativo</p>
+            <p class="kicker">02 · Progetto reale · Fotografo @gv.arw</p>
+            <h2 class="cond">Il tempo<br><span class="goldfill">non aspetta.</span></h2>
+            <p class="lead">Lo spot di un fotografo di sport, ritratti ed eventi: una rovesciata al campo, un ritratto in studio, un ballo sotto i lampadari. Voce, sottotitoli e stacchi a tempo di musica.</p>
+            <div class="story-meta"><span>22 s</span><span>Voce e sottotitoli</span><span>9:16</span></div>
+            <button class="pill gold" type="button" data-open-player data-src="media/gvarw-full.mp4" data-poster="media/gvarw-poster.jpg" data-title="Spot di gv.arw, fotografo"><svg aria-hidden="true"><use href="#play"></use></svg>Guarda con l'audio</button>
+          </article>
+          <article class="story-text">
+            <p class="kicker">03 · Spot dimostrativo</p>
             <h2 class="cond">Da una foto<br><span class="goldfill">a uno spot.</span></h2>
             <p class="lead">Una tazzina fotografata col telefono diventa plastilina, cinema, animazione, 3D e acquerello. Un solo video, ogni stile.</p>
             <div class="story-meta"><span>55 s</span><span>Voce e musica</span><span>9:16</span></div>
             <button class="pill gold" type="button" data-open-player data-src="media/caffe-full.mp4" data-poster="media/caffe-poster.jpg" data-title="Da una foto a uno spot"><svg aria-hidden="true"><use href="#play"></use></svg>Guarda con l'audio</button>
           </article>
           <article class="story-text">
-            <p class="kicker">03 · Spot Cinema · Concept pizzeria</p>
+            <p class="kicker">04 · Spot Cinema · Concept pizzeria</p>
             <h2 class="cond">Sabato<br><span class="goldfill">sera.</span></h2>
             <p class="lead">Quattro scene, una sola storia, stacchi sugli accenti della musica. Sembra girato, ma non esiste un set: è il nostro Spot Cinema.</p>
             <div class="story-meta"><span>31 s</span><span>Musica originale</span><span>9:16</span></div>
@@ -406,6 +413,7 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
       </div>
       <div class="story-screen" aria-hidden="true">
         <video class="on" src="media/rt-loop-b.mp4" poster="media/rt-poster-b.jpg" muted loop playsinline preload="none"></video>
+        <video src="media/gvarw-loop.mp4" poster="media/gvarw-poster-b.jpg" muted loop playsinline preload="none"></video>
         <video src="media/caffe-loop.mp4" poster="media/caffe-poster.jpg" muted loop playsinline preload="none"></video>
         <video src="media/cinema-loop.mp4" poster="media/cinema-poster.jpg" muted loop playsinline preload="none"></video>
         <i class="story-fade"></i>
@@ -602,10 +610,10 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
   man.innerHTML = man.textContent.trim().split(/\s+/).map(w => `<span class="w">${w}</span>`).join(' ');
   const words = [...man.querySelectorAll('.w')];
 
-  /* ---------- film: tre passi guidati dallo scroll ---------- */
+  /* ---------- film: quattro passi guidati dallo scroll ---------- */
   const sec = document.getElementById('film'), screen = sec.querySelector('.story-screen');
   const texts = [...sec.querySelectorAll('.story-text')], steps = [...sec.querySelectorAll('.story-steps i')], label = document.getElementById('story-label');
-  const shapes = ['truck', 'camera', 'clapper'], names = ['Roberto Traslochi', 'Da una foto a uno spot', 'Sabato sera'];
+  const shapes = ['truck', 'camera', 'phone', 'clapper'], names = ['Roberto Traslochi', 'gv.arw', 'Da una foto a uno spot', 'Sabato sera'];
   const isMobile = matchMedia('(max-width: 860px)').matches || matchMedia('(pointer: coarse)').matches;
   const shutter = screen.querySelector('.shutter'), tap = screen.querySelector('.tap');
   let cur = -1, visible = false;
@@ -640,7 +648,7 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
     steps.forEach((el, k) => el.classList.toggle('on', k <= i));
     if (isMobile) { if (first) { tryPlay(); } else mobileSwitch(i); }
     else storyVids.forEach((v, k) => v.classList.toggle('on', k === i));
-    label.textContent = `${names[i]} · ${i + 1} di 3`;
+    label.textContent = `${names[i]} · ${i + 1} di ${texts.length}`;
     sec.dataset.shape = shapes[i];
   }
   function storyScroll() {
@@ -651,7 +659,7 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
       if (isMobile) { if (vis) tryPlay(); else if (mVid) mVid.pause(); }
       else { if (!vis) storyVids.forEach(v => v.pause()); else if (!reduce && !dlg.open) storyVids.forEach(v => v.play().catch(() => {})); }
     }
-    setStep(Math.min(2, Math.floor(progress(sec) * 3)));
+    setStep(Math.min(texts.length - 1, Math.floor(progress(sec) * texts.length)));
   }
   // al primo tocco il telefono sblocca la riproduzione di tutti i video muti
   const unlock = () => { document.querySelectorAll('video[muted], video[data-auto]').forEach(v => { if (v === pv) return; const p = v.play(); if (p && p.then) p.then(() => { const r = v.getBoundingClientRect(); const onScreen = r.bottom > 0 && r.top < innerHeight; if (!onScreen) v.pause(); }).catch(() => {}); }); if (mVid) tryPlay(); };
