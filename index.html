@@ -822,7 +822,7 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
         pay.textContent = p.unit ? `Attiva · ${fmtEUR(tot)}/mese` : `Paga ora · ${fmtEUR(tot)}`;
         const ref = [p.id, st.scene && `scene${st.scene}`, st.fmt && `formati${st.fmt}`, st.rev && `revisioni${st.rev}`, st.rush && '48ore', st.locale && 'locale'].filter(Boolean).join('_');
         pay.href = `${link}?client_reference_id=${encodeURIComponent(ref.slice(0, 200))}&locale=it`;
-        pn.textContent = hasExtra ? 'Pagamento sicuro con Stripe. Nel checkout aggiungi gli extra che hai scelto qui: li trovi già pronti.' : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
+        pn.textContent = hasExtra ? 'Pagamento sicuro con Stripe. Nel checkout, sotto il pacchetto, aggiungi gli extra che hai scelto qui.' : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
       }
     }
     function setTab(tab, plan) {
