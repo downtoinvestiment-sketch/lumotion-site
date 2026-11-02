@@ -1,18 +1,24 @@
-# Ripubblica il sito su GitHub Pages a ogni push su main.
-# Serve perché i push fatti da app esterne (per esempio Claude) non fanno partire
-# da soli la pubblicazione di GitHub Pages: qui la chiediamo esplicitamente.
-name: Pubblica su GitHub Pages
+# Il sito è pubblicato da GitHub Pages dal ramo gh-pages.
+# A ogni push su main questo workflow porta gh-pages allo stesso punto di main e
+# chiede a Pages di pubblicarlo (i push fatti da un workflow non lo avviano da soli).
+name: Pubblica il sito
 on:
   push:
     branches: [main]
   workflow_dispatch:
 permissions:
+  contents: write
   pages: write
 jobs:
   pubblica:
     runs-on: ubuntu-latest
     steps:
-      - name: Chiedi a GitHub Pages di pubblicare main
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Allinea gh-pages a main
+        run: git push origin HEAD:refs/heads/gh-pages
+      - name: Chiedi a GitHub Pages di pubblicare
         run: |
           curl -sS --fail-with-body -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
