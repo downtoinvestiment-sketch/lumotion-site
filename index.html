@@ -348,7 +348,7 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
 
 <header class="nav">
   <a class="brand" href="#top" aria-label="Lumotion Studio, inizio"><svg aria-hidden="true"><use href="#mark"></use></svg>Lumotion</a>
-  <nav aria-label="Sezioni"><a href="#film">Lavori</a><a href="#cinema">Spot Cinema</a><a href="#servizi">Servizi</a><a href="#prezzi">Prezzi</a></nav>
+  <nav aria-label="Sezioni"><a href="#cinema">Spot Cinema</a><a href="#film">Lavori</a><a href="#servizi">Servizi</a><a href="#prezzi">Prezzi</a></nav>
   <a class="cta" href="#contatti">Parliamone</a>
 </header>
 
@@ -375,7 +375,29 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
     <div class="meta"><span>Video AI</span><span>Social</span><span>Siti web</span></div>
   </section>
 
-  <!-- 3. FILM: quattro passi -->
+  <!-- 3. SPOT CINEMA -->
+  <section class="cinema" id="cinema" aria-label="Spot Cinema">
+    <div class="pin">
+      <video class="bg" src="media/gvarw-cinema-loop.mp4" poster="media/gvarw-cinema-poster.jpg" muted loop playsinline preload="auto" data-auto aria-hidden="true"></video>
+      <div class="shade" aria-hidden="true"></div>
+      <div class="lb t" aria-hidden="true"></div>
+      <div class="lb b" aria-hidden="true"></div>
+      <div class="cin-hud" aria-hidden="true"><span>"Il tempo non aspetta" · Fotografo @gv.arw</span><span>22 s · 2.39 : 1</span></div>
+      <div class="cin-copy gut">
+        <p class="kicker">Spot Cinema · Progetto reale</p>
+        <h2 class="cond" id="cin-title">Anche la tua attività è un film.</h2>
+        <p class="lead">Video super realistici e una sola storia: stacchi sugli accenti della musica, rallentatore, luce e grana curate inquadratura per inquadratura. Sembra girato, ma non esiste un set.</p>
+        <div class="cin-row">
+          <div class="cin-price"><span>Da</span><strong class="cond goldfill">149 €</strong><small>15–30 s · 9:16 + 1:1 · musica originale · versione per le inserzioni · 2 revisioni</small></div>
+          <button class="pill ghost" type="button" data-open-player data-src="media/gvarw-full.mp4" data-poster="media/gvarw-poster.jpg" data-title="Spot di gv.arw, fotografo"><svg aria-hidden="true"><use href="#play"></use></svg>Guarda il film con l'audio</button>
+          <a class="pill gold" href="#prezzi" data-pick="cinema">Lo voglio per la mia attività</a>
+        </div>
+        <p class="cin-note">Spot reale per il fotografo @gv.arw, creato con l'AI partendo dalle sue foto: nessun set, nessuna troupe. Con qualche foto della tua attività, lo facciamo anche per te.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FILM: quattro passi -->
   <section class="story" id="film" aria-label="I nostri film" data-shape="truck">
     <div class="pin">
       <div class="story-left gut">
@@ -419,28 +441,6 @@ dialog.player::backdrop { background: rgba(0,0,0,.9); backdrop-filter: blur(16px
         <i class="story-fade"></i>
         <i class="shutter" aria-hidden="true"></i>
         <button class="tap" type="button" hidden>Tocca per riprodurre</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4. SPOT CINEMA -->
-  <section class="cinema" id="cinema" aria-label="Spot Cinema">
-    <div class="pin">
-      <video class="bg" src="media/gvarw-cinema-loop.mp4" poster="media/gvarw-cinema-poster.jpg" muted loop playsinline preload="auto" data-auto aria-hidden="true"></video>
-      <div class="shade" aria-hidden="true"></div>
-      <div class="lb t" aria-hidden="true"></div>
-      <div class="lb b" aria-hidden="true"></div>
-      <div class="cin-hud" aria-hidden="true"><span>"Il tempo non aspetta" · Fotografo @gv.arw</span><span>22 s · 2.39 : 1</span></div>
-      <div class="cin-copy gut">
-        <p class="kicker">Spot Cinema · Progetto reale</p>
-        <h2 class="cond" id="cin-title">Anche la tua attività è un film.</h2>
-        <p class="lead">Video super realistici e una sola storia: stacchi sugli accenti della musica, rallentatore, luce e grana curate inquadratura per inquadratura. Sembra girato, ma non esiste un set.</p>
-        <div class="cin-row">
-          <div class="cin-price"><span>Da</span><strong class="cond goldfill">149 €</strong><small>15–30 s · 9:16 + 1:1 · musica originale · versione per le inserzioni · 2 revisioni</small></div>
-          <button class="pill ghost" type="button" data-open-player data-src="media/gvarw-full.mp4" data-poster="media/gvarw-poster.jpg" data-title="Spot di gv.arw, fotografo"><svg aria-hidden="true"><use href="#play"></use></svg>Guarda il film con l'audio</button>
-          <a class="pill gold" href="#prezzi" data-pick="cinema">Lo voglio per la mia attività</a>
-        </div>
-        <p class="cin-note">Spot reale per il fotografo @gv.arw, creato con l'AI partendo dalle sue foto: nessun set, nessuna troupe. Con qualche foto della tua attività, lo facciamo anche per te.</p>
       </div>
     </div>
   </section>
