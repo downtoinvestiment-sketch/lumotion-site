@@ -750,7 +750,8 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
         <h3>Il tuo preventivo</h3>
         <div><strong id="sum-name" style="font-size:20px"></strong></div>
         <div class="extras" id="extras">
-          <div class="extra"><div><div class="nm">Secondi in più</div><div class="pr">+5 secondi · 17 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec" data-d="-1" aria-label="Togli 5 secondi">−</button><output id="o-sec">0</output><button type="button" data-step="sec" data-d="1" aria-label="Aggiungi 5 secondi">+</button></div></div>
+          <div class="extra"><div><div class="nm">+5 secondi</div><div class="pr">17 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec" data-d="-1" aria-label="Togli 5 secondi">−</button><output id="o-sec">0</output><button type="button" data-step="sec" data-d="1" aria-label="Aggiungi 5 secondi">+</button></div></div>
+          <div class="extra"><div><div class="nm">+10 secondi</div><div class="pr">33 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec10" data-d="-1" aria-label="Togli 10 secondi">−</button><output id="o-sec10">0</output><button type="button" data-step="sec10" data-d="1" aria-label="Aggiungi 10 secondi">+</button></div></div>
           <div class="extra"><div><div class="nm">Consegna entro 48 ore</div><div class="pr">+30% del pacchetto</div></div><button type="button" class="switch" id="sw-rush" role="switch" aria-checked="false" aria-label="Consegna entro 48 ore"></button></div>
         </div>
         <div class="total"><span class="u" id="sum-unit">Totale</span><span class="v" id="sum-total">149 €</span></div>
@@ -1058,8 +1059,9 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
       landing: 'https://buy.stripe.com/bJebJ3dckfeZgTHehQ00008'
     };
     const box = document.getElementById('plans');
-    const SEC_EUR = 17, SEC_MAX = 6; // ogni +5 secondi costa 17 € (15 s = 50 €, arrotondato)
-    const st = { tab: 'spot', plan: 'cinema', sec: 0, rush: false };
+    const SEC_EUR = 17, SEC10_EUR = 33, EXTRA_MAX = 30; // +5 s = 17 €, +10 s = 33 € (15 s = 50 €, arrotondato); al massimo +30 s
+    const st = { tab: 'spot', plan: 'cinema', sec: 0, sec10: 0, rush: false };
+    const addSec = () => st.sec * 5 + st.sec10 * 10;
     const fmtEUR = v => (Math.round(v * 100) / 100).toLocaleString('it-IT', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
     let shown = 149;
     function animateTo(v, el) {
@@ -1084,24 +1086,25 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
     function update() {
       const p = current(), ex = document.getElementById('extras');
       ex.classList.toggle('disabled-x', !p.extras);
-      if (!p.extras) { st.sec = 0; st.rush = false; }
-      document.getElementById('o-sec').textContent = st.sec ? `+${st.sec * 5} s` : '0';
+      if (!p.extras) { st.sec = st.sec10 = 0; st.rush = false; }
+      document.getElementById('o-sec').textContent = st.sec;
+      document.getElementById('o-sec10').textContent = st.sec10;
       document.getElementById('sw-rush').setAttribute('aria-checked', st.rush ? 'true' : 'false');
-      let tot = p.price + st.sec * SEC_EUR;
+      let tot = p.price + st.sec * SEC_EUR + st.sec10 * SEC10_EUR;
       if (st.rush) tot += Math.round(p.price * 0.3);
-      document.getElementById('sum-name').textContent = p.sec && st.sec ? `${p.name} + ${st.sec * 5} s (${p.sec + st.sec * 5} secondi)` : p.name;
+      document.getElementById('sum-name').textContent = p.sec && addSec() ? `${p.name} + ${addSec()} s (${p.sec + addSec()} secondi)` : p.name;
       document.getElementById('sum-unit').textContent = p.unit ? 'Totale al mese' : 'Totale';
       animateTo(tot, document.getElementById('sum-total'));
       document.getElementById('sum-note').textContent = p.extras ? 'Prezzi IVA esclusa.' : 'Prezzi IVA esclusa. Gli extra sono disponibili sugli spot singoli.';
       // pulsante "Paga ora": apre il checkout Stripe del pacchetto, con un riferimento alla configurazione scelta
       const pay = document.getElementById('sum-pay'), pn = document.getElementById('pay-note'), link = STRIPE[p.id];
-      const hasExtra = st.sec || st.rush;
+      const hasExtra = addSec() || st.rush;
       pay.hidden = pn.hidden = !link;
       if (link) {
         pay.textContent = p.unit ? `Attiva · ${fmtEUR(tot)}/mese` : `Paga ora · ${fmtEUR(tot)}`;
-        const ref = [p.id, st.sec && `piu${st.sec * 5}sec`, st.rush && '48ore'].filter(Boolean).join('_');
+        const ref = [p.id, st.sec && `5secx${st.sec}`, st.sec10 && `10secx${st.sec10}`, st.rush && '48ore'].filter(Boolean).join('_');
         pay.href = `${link}?client_reference_id=${encodeURIComponent(ref.slice(0, 200))}&locale=it`;
-        pn.textContent = hasExtra ? `Pagamento sicuro con Stripe. Nel checkout, sotto il pacchetto, aggiungi gli extra che hai scelto qui${st.sec ? ` («5 secondi in più» × ${st.sec})` : ''}.` : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
+        pn.textContent = hasExtra ? `Pagamento sicuro con Stripe. Nel checkout, sotto il pacchetto, aggiungi gli extra che hai scelto qui${addSec() ? ` (${[st.sec && `«5 secondi in più» × ${st.sec}`, st.sec10 && `«10 secondi in più» × ${st.sec10}`].filter(Boolean).join(', ')})` : ''}.` : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
       }
     }
     function setTab(tab, plan) {
@@ -1110,13 +1113,13 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
       renderPlans(); update();
     }
     document.querySelectorAll('.tabs button').forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
-    document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.step; st[k] = Math.max(0, Math.min(SEC_MAX, st[k] + (+b.dataset.d))); update(); }));
+    document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.step, d = +b.dataset.d; if (d > 0 && addSec() + (k === 'sec10' ? 10 : 5) > EXTRA_MAX) return; st[k] = Math.max(0, st[k] + d); update(); }));
     document.getElementById('sw-rush').addEventListener('click', () => { st.rush = !st.rush; update(); });
     document.querySelectorAll('[data-pick]').forEach(a => a.addEventListener('click', () => setTab('spot', a.dataset.pick)));
     document.querySelectorAll('.svc a[data-tab]').forEach(a => a.addEventListener('click', () => setTab(a.dataset.tab)));
     document.getElementById('sum-cta').addEventListener('click', () => {
       const p = current(), parts = [p.name];
-      if (st.sec) parts.push(`${st.sec * 5} secondi in più (${p.sec + st.sec * 5} secondi in tutto)`); if (st.rush) parts.push('consegna entro 48 ore');
+      if (addSec()) parts.push(`${addSec()} secondi in più (${p.sec + addSec()} secondi in tutto)`); if (st.rush) parts.push('consegna entro 48 ore');
       const msg = document.getElementById('f-msg');
       msg.value = `Vorrei un preventivo per: ${parts.join(', ')} (${document.getElementById('sum-total').textContent}${p.unit}).\n`;
       const map = { reel: 's1', cinema: 's1', cinema30: 's1', reelmese: 's1', cinemamese: 's1', completo: 's2', lumopro: 's2', landing: 's3' };
