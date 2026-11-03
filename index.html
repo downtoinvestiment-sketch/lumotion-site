@@ -13,7 +13,49 @@
 <meta property="og:url" content="https://lumotionstudioia.com/">
 <link rel="canonical" href="https://lumotionstudioia.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 360'%3E%3Crect width='360' height='360' fill='%23050505'/%3E%3Cellipse cx='180' cy='180' rx='122' ry='50' fill='none' stroke='%23e2b25a' stroke-width='18' transform='rotate(-28 180 180)'/%3E%3Cpath d='M164 146 Q160 143.5 160 148 L160 212 Q160 216.5 164 214 L214 184 Q218 180 214 176 Z' fill='%23e2b25a'/%3E%3C/svg%3E">
-<style>html,body{margin:0;padding:0;background:#050505}</style>
+<style>html,body{margin:0;padding:0;background:#050505}
+/* ===================== 3D ===================== */
+/* pellicola: gli spot entrano inclinati come fotogrammi e si raddrizzano al centro */
+.work-media { --c: 0; --ca: 0; --dir: 1; --tx: 0deg; --ty: 0deg; transform: perspective(1200px) rotateY(calc(var(--c) * var(--dir) * 18deg + var(--ty))) rotateX(calc(var(--c) * -6deg + var(--tx))) translateZ(calc(var(--ca) * -90px)); transition: clip-path 1.25s cubic-bezier(.2,.7,.2,1), -webkit-clip-path 1.25s cubic-bezier(.2,.7,.2,1), transform .18s ease-out; }
+.work:nth-child(even) .work-media { --dir: -1; }
+.work-media::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit; opacity: calc(var(--ca) * 1.8);
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgba(247,228,181,.5) 9px 17px, transparent 17px 26px) 6px 0 / 7px 100% no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgba(247,228,181,.5) 9px 17px, transparent 17px 26px) calc(100% - 6px) 0 / 7px 100% no-repeat,
+    linear-gradient(to right, rgba(5,5,5,.88) 0 19px, transparent 19px calc(100% - 19px), rgba(5,5,5,.88) calc(100% - 19px)); }
+/* riflesso dorato che segue il dito o il mouse */
+.sheen { position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 30%), rgba(247,228,181,.32), rgba(226,178,90,.1) 28%, rgba(0,0,0,0) 55%); mix-blend-mode: screen; }
+.tilting .sheen { opacity: 1; }
+.plan { --tx: 0deg; --ty: 0deg; --lift: 0px; transform: perspective(900px) rotateX(var(--tx)) rotateY(var(--ty)) translateY(var(--lift)); transition: border-color .25s, transform .2s ease-out, background .25s; overflow: hidden; }
+.plan:hover { transform: perspective(900px) rotateX(var(--tx)) rotateY(var(--ty)) translateY(-3px); }
+/* ciak 3D: batte a ogni passaggio del metodo */
+.process { position: relative; }
+.clap3d { position: sticky; top: 34vh; z-index: 2; width: clamp(160px, 15vw, 230px); height: clamp(148px, 13.8vw, 212px); margin: 0 clamp(8px, 2vw, 40px) calc(-1 * clamp(148px, 13.8vw, 212px)) auto; perspective: 900px; pointer-events: none; }
+.clap-rig { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--crx, 10deg)) rotateY(var(--cry, -24deg)); transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+.clap-slate, .clap-back, .clap-side, .clap-bottom { position: absolute; left: 0; right: 0; bottom: 0; height: 74%; border-radius: 8px; }
+.clap-slate { background: linear-gradient(160deg, #1b1916, #0b0a09 70%); border: 1px solid rgba(247,228,181,.25); transform: translateZ(9px); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); display: grid; grid-template-rows: 30% 1fr; overflow: hidden; }
+.clap-back { background: #070706; transform: translateZ(-9px); }
+.clap-side { width: 18px; left: auto; right: -9px; background: linear-gradient(#2a2620, #11100e); transform: rotateY(90deg); border-radius: 2px; }
+.clap-bottom { height: 18px; bottom: -9px; background: #0e0d0b; transform: rotateX(90deg); border-radius: 2px; }
+.clap-bar, .clap-stick b { background: repeating-linear-gradient(118deg, #0b0a09 0 16px, var(--gold) 16px 32px); }
+.clap-bar { border-bottom: 1px solid rgba(247,228,181,.25); }
+.clap-txt { display: grid; grid-template-columns: 1fr 1fr; align-content: center; gap: 6px 10px; padding: 8px 12px; font-family: var(--display); font-stretch: 75%; font-weight: 800; text-transform: uppercase; color: var(--gold-hi); font-size: clamp(10px, 1vw, 14px); letter-spacing: .06em; }
+.clap-txt span:first-child { grid-column: 1 / -1; font-size: 1.5em; color: var(--gold); }
+.clap-txt em { font-style: normal; color: #fff; }
+.clap-stick { position: absolute; left: 0; right: 0; top: 4%; height: 21%; transform-origin: 4% 100%; transform: translateZ(9px) rotateZ(-26deg); transition: transform .14s cubic-bezier(.5,0,.75,0); }
+.clap-stick b { position: absolute; inset: 0; border-radius: 6px 6px 3px 3px; border: 1px solid rgba(247,228,181,.25); box-shadow: 0 6px 18px rgba(0,0,0,.5); }
+.clap3d.shut .clap-stick { transform: translateZ(9px) rotateZ(0deg); }
+.clap3d.shut .clap-rig { animation: clap-kick .35s ease-out; }
+@keyframes clap-kick { 30% { transform: rotateX(calc(var(--crx, 10deg) + 6deg)) rotateY(var(--cry, -24deg)) translateY(3px); } }
+@media (min-width: 761px) { .process .steps p { max-width: 30ch; } }
+@media (min-width: 761px) and (max-width: 1199px) { .process .steps p { max-width: 24ch; } .clap3d { width: 130px; height: 120px; margin-bottom: -120px; } }
+@media (max-width: 760px) { .clap3d { position: relative; top: auto; width: 150px; height: 138px; margin: -8px 0 28px auto; } }
+/* gelato 3D vicino allo spot «Anche voi?» */
+.gelato3d { position: absolute; right: -10px; top: -70px; width: clamp(120px, 13vw, 200px); height: clamp(150px, 16vw, 250px); pointer-events: none; z-index: 1; }
+@media (max-width: 860px) { .gelato3d { right: 0; top: 20px; width: 76px; height: 94px; } }
+@media (prefers-reduced-motion: reduce) { .work-media { transform: none !important; } .work-media::before { display: none; } .plan { transform: none !important; } }
+</style>
 </head>
 <body>
 <title>Lumotion Studio</title>
@@ -651,6 +693,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
           <span class="work-badge" aria-hidden="true"><svg><use href="#play"></use></svg></span>
         </button>
         <div class="work-text">
+          <canvas class="gelato3d" id="gelato3d" aria-hidden="true"></canvas>
           <p class="kicker">04 · Spot Cinema · Spot Lumotion</p>
           <h3 class="cond">Anche<br><span class="goldfill">voi?</span></h3>
           <p class="lead">Un gelato al pistacchio, un uomo che vola e il tempo che si ferma in pizzeria, dal barbiere e in boutique. Lo spot con cui presentiamo Lumotion: comico, super realistico, girato senza set.</p>
@@ -703,6 +746,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
   <section class="process gut" id="metodo" aria-label="Come lavoriamo">
     <p class="kicker">Come lavoriamo</p>
     <h2 class="cond">Dal messaggio<br><span class="goldfill">alla consegna.</span></h2>
+    <div class="clap3d" id="clap" aria-hidden="true"><div class="clap-rig"><i class="clap-back"></i><i class="clap-side"></i><i class="clap-bottom"></i><div class="clap-slate"><div class="clap-bar"></div><div class="clap-txt"><span>Lumotion</span><span>Scena <em id="clap-n">01</em></span><span>Ciak <em>1</em></span></div></div><div class="clap-stick"><b></b></div></div></div>
     <ol class="steps" id="steps">
       <i class="fill" aria-hidden="true"></i>
       <li><h3 class="cond"><span class="n">01</span>Ci scrivi</h3><p>Su Instagram, via email o da questo sito. Bastano due righe sulla tua attività.</p></li>
@@ -924,6 +968,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
       const m = pars[i].parentElement.getBoundingClientRect();
       const c = clamp((m.top + m.height / 2 - mid) / (mid + m.height / 2), -1, 1);
       pars[i].style.transform = `translate3d(0, ${(-c * 6).toFixed(2)}%, 0)`;
+      const med = pars[i].parentElement; med.style.setProperty('--c', c.toFixed(3)); med.style.setProperty('--ca', Math.abs(c).toFixed(3));
     });
     if (act >= 0 && sec.dataset.shape !== works[act].dataset.shape) sec.dataset.shape = works[act].dataset.shape;
   }
@@ -983,7 +1028,9 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
     }
     // processo
     const sr = stepsEl.getBoundingClientRect();
-    stepsEl.style.setProperty('--sp', clamp((innerHeight * .6 - sr.top) / sr.height));
+    const spv = clamp((innerHeight * .6 - sr.top) / sr.height);
+    stepsEl.style.setProperty('--sp', spv);
+    if (window.__clap) window.__clap(spv, sr);
     // barra
     const max = document.documentElement.scrollHeight - innerHeight;
     bar.style.transform = `scaleX(${max > 0 ? clamp(scrollY / max) : 0})`;
@@ -1166,12 +1213,273 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
 </script>
 
 <script>
+/* ---------- 3D: piccola libreria WebGL condivisa (matrici, mesh, materiale con riflessi) ---------- */
+window.L3D = (() => {
+  const M = {
+    persp(f, a, n, fr) { const t = 1 / Math.tan(f / 2); return new Float32Array([t / a, 0, 0, 0, 0, t, 0, 0, 0, 0, (fr + n) / (n - fr), -1, 0, 0, 2 * fr * n / (n - fr), 0]); },
+    mul(a, b) { const o = new Float32Array(16); for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) { let s = 0; for (let k = 0; k < 4; k++) s += a[k * 4 + j] * b[i * 4 + k]; o[i * 4 + j] = s; } return o; },
+    rotX(r) { const c = Math.cos(r), s = Math.sin(r); return new Float32Array([1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1]); },
+    rotY(r) { const c = Math.cos(r), s = Math.sin(r); return new Float32Array([c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]); },
+    rotZ(r) { const c = Math.cos(r), s = Math.sin(r); return new Float32Array([c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]); },
+    trans(x, y, z) { return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1]); },
+    scale(s) { return new Float32Array([s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 1]); },
+  };
+  // normali morbide da una mesh indicizzata
+  function normals(pos, idx) {
+    const n = new Float32Array(pos.length);
+    for (let i = 0; i < idx.length; i += 3) {
+      const a = idx[i] * 3, b = idx[i + 1] * 3, c = idx[i + 2] * 3;
+      const ux = pos[b] - pos[a], uy = pos[b + 1] - pos[a + 1], uz = pos[b + 2] - pos[a + 2];
+      const vx = pos[c] - pos[a], vy = pos[c + 1] - pos[a + 1], vz = pos[c + 2] - pos[a + 2];
+      const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      for (const k of [a, b, c]) { n[k] += nx; n[k + 1] += ny; n[k + 2] += nz; }
+    }
+    for (let i = 0; i < n.length; i += 3) { const l = Math.hypot(n[i], n[i + 1], n[i + 2]) || 1; n[i] /= l; n[i + 1] /= l; n[i + 2] /= l; }
+    return n;
+  }
+  // superficie a griglia u×v da una funzione (u,v) -> [x,y,z]
+  function grid(nu, nv, f, wrapU = true) {
+    const pos = [], idx = [], cu = wrapU ? nu : nu + 1;
+    for (let j = 0; j <= nv; j++) for (let i = 0; i < cu; i++) pos.push(...f(i / nu, j / nv));
+    for (let j = 0; j < nv; j++) for (let i = 0; i < nu; i++) {
+      const i1 = wrapU ? (i + 1) % nu : i + 1, a = j * cu + i, b = j * cu + i1, c = (j + 1) * cu + i, d = (j + 1) * cu + i1;
+      idx.push(a, c, b, b, c, d);
+    }
+    const p = new Float32Array(pos), ix = new Uint16Array(idx);
+    return { pos: p, idx: ix, nrm: normals(p, ix) };
+  }
+  // materiale: oro o superfici opache, con un ambiente da studio procedurale
+  const VS = `
+attribute vec3 aPos; attribute vec3 aNrm;
+uniform mat4 uModel, uVP; uniform float uMode;
+varying vec3 vW, vN, vL;
+void main(){ vec4 w = uModel * vec4(aPos,1.); vW = w.xyz; vN = mat3(uModel) * aNrm; vL = aPos; gl_Position = uVP * w; }`;
+  const FS = `
+precision mediump float;
+varying vec3 vW, vN, vL;
+uniform vec3 uCam, uBase; uniform float uMetal, uRough, uAlpha, uTime, uMode, uEnvRot;
+float hash(vec3 p){ p = fract(p*0.3183099 + .1); p *= 17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+float noise(vec3 x){ vec3 i = floor(x), f = fract(x); f = f*f*(3.-2.*f);
+  return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+             mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
+vec3 env(vec3 r){
+  float c = cos(uEnvRot), s = sin(uEnvRot); r = vec3(c*r.x + s*r.z, r.y, -s*r.x + c*r.z);
+  vec3 col = mix(vec3(0.03,0.025,0.02), vec3(0.16,0.12,0.08), smoothstep(-0.2, 0.9, r.y));
+  col += vec3(1.0,0.93,0.8) * 2.6 * smoothstep(0.55, 0.95, r.y) * smoothstep(0.9, 0.2, abs(r.x));          // softbox dall'alto
+  col += vec3(1.0,0.86,0.62) * 1.8 * smoothstep(0.75, 0.97, dot(r, normalize(vec3(-0.8,0.35,0.5))));     // luce chiave
+  col += vec3(1.0,0.7,0.4) * 1.2 * smoothstep(0.8, 0.98, dot(r, normalize(vec3(0.9,0.1,-0.4))));          // controluce caldo
+  col += vec3(0.9,0.8,0.7) * 0.6 * smoothstep(0.86, 1.0, dot(r, normalize(vec3(0.2,-0.2,1.0))));
+  return col;
+}
+void main(){
+  vec3 N = normalize(vN), V = normalize(uCam - vW);
+  vec3 base = uBase; float rough = uRough;
+  if (uMode > 0.5 && uMode < 1.5) { // cialda del cono: rombi
+    float a = atan(vL.z, vL.x) * 3.0, y = vL.y * 9.0;
+    float g1 = abs(fract(a + y) - .5), g2 = abs(fract(a - y) - .5);
+    float line = 1. - smoothstep(0.04, 0.12, min(g1, g2));
+    base = mix(vec3(0.86,0.6,0.3), vec3(0.55,0.33,0.14), line);
+    N = normalize(N + 0.25 * line * normalize(vec3(vL.x, 0., vL.z)));
+  }
+  if (uMode > 1.5) { // gelato: granella di pistacchio
+    float n = noise(vL * 22.0), m = noise(vL * 7.0 + 3.1);
+    base = mix(uBase, uBase * 0.72, smoothstep(0.62, 0.8, n));
+    base = mix(base, vec3(0.47,0.36,0.2), step(0.86, n) * 0.6);
+    N = normalize(N + (m - .5) * 0.25);
+  }
+  vec3 R = reflect(-V, N);
+  float fres = pow(1. - max(dot(N, V), 0.), 5.);
+  vec3 L1 = normalize(vec3(-0.6, 0.8, 0.6)), L2 = normalize(vec3(0.8, 0.3, -0.5));
+  float dif = max(dot(N, L1), 0.) * 0.9 + max(dot(N, L2), 0.) * 0.35 + 0.18;
+  float sp = pow(max(dot(N, normalize(L1 + V)), 0.), mix(220., 18., rough));
+  vec3 col;
+  if (uMetal > 0.5) {
+    vec3 e = env(R);
+    vec3 F = mix(uBase, vec3(1.), fres);
+    col = max(e, vec3(0.32,0.25,0.15)) * F + uBase * (0.16 + dif * 0.22) + sp * vec3(1.,.95,.85) * 1.4;
+  } else {
+    vec3 e = env(R) * (0.12 + fres * 0.6) * (1. - rough * 0.7);
+    float wrap = max((dot(N, L1) + 0.45) / 1.45, 0.);   // luce che "entra" nel gelato
+    col = base * (dif * 0.75 + wrap * 0.35) + e + sp * 0.25 * (1. - rough);
+  }
+  col = col / (col + vec3(0.85)) * 1.55;   // tone mapping morbido
+  gl_FragColor = vec4(col * uAlpha, uAlpha);
+}`;
+  function program(gl) {
+    const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
+    const p = gl.createProgram(); gl.attachShader(p, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) return null;
+    const u = {}; ['uModel', 'uVP', 'uCam', 'uBase', 'uMetal', 'uRough', 'uAlpha', 'uTime', 'uMode', 'uEnvRot'].forEach(n => u[n] = gl.getUniformLocation(p, n));
+    return { p, u, aPos: gl.getAttribLocation(p, 'aPos'), aNrm: gl.getAttribLocation(p, 'aNrm') };
+  }
+  function upload(gl, m) {
+    const b = k => { const o = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, o); gl.bufferData(gl.ARRAY_BUFFER, m[k], gl.STATIC_DRAW); return o; };
+    const ib = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, m.idx, gl.STATIC_DRAW);
+    return { vp: b('pos'), vn: b('nrm'), ib, n: m.idx.length };
+  }
+  function draw(gl, prg, mesh, model, mat) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.vp); gl.enableVertexAttribArray(prg.aPos); gl.vertexAttribPointer(prg.aPos, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.vn); gl.enableVertexAttribArray(prg.aNrm); gl.vertexAttribPointer(prg.aNrm, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.ib);
+    gl.uniformMatrix4fv(prg.u.uModel, false, model);
+    gl.uniform3fv(prg.u.uBase, mat.base); gl.uniform1f(prg.u.uMetal, mat.metal || 0); gl.uniform1f(prg.u.uRough, mat.rough == null ? .4 : mat.rough); gl.uniform1f(prg.u.uMode, mat.mode || 0);
+    gl.drawElements(gl.TRIANGLES, mesh.n, gl.UNSIGNED_SHORT, 0);
+  }
+  // inclinazione del telefono (dove il browser la concede senza chiedere permessi)
+  const tilt = { x: 0, y: 0, on: false };
+  let g0 = null, b0 = null;
+  addEventListener('deviceorientation', e => {
+    if (e.gamma == null || e.beta == null) return;
+    if (g0 === null) { g0 = e.gamma; b0 = e.beta; }
+    g0 += (e.gamma - g0) * 0.004; b0 += (e.beta - b0) * 0.004;       // il riferimento segue piano la posizione naturale
+    tilt.x = Math.max(-1, Math.min(1, (e.gamma - g0) / 22)); tilt.y = Math.max(-1, Math.min(1, (e.beta - b0) / 22)); tilt.on = true;
+  }, { passive: true });
+  return { M, grid, normals, program, upload, draw, tilt };
+})();
+
+/* ---------- forme 3D: logo e gelato ---------- */
+(() => {
+  const L = window.L3D;
+  // anello del logo (toro) inclinato come nel simbolo, e triangolo play con spessore
+  L.logoMeshes = function () {
+    const R = 1.42, r = 0.075, tx = 66 * Math.PI / 180, tz = -28 * Math.PI / 180;
+    const rot = (x, y, z) => { const y2 = y * Math.cos(tx) - z * Math.sin(tx), z2 = y * Math.sin(tx) + z * Math.cos(tx); return [x * Math.cos(tz) - y2 * Math.sin(tz), x * Math.sin(tz) + y2 * Math.cos(tz), z2]; };
+    const ring = L.grid(180, 18, (u, v) => { const a = u * Math.PI * 2, b = v * Math.PI * 2, rr = R + r * Math.cos(b); return rot(rr * Math.cos(a), rr * Math.sin(a), r * Math.sin(b)); });
+    // triangolo play con angoli e bordi arrotondati
+    const P = [[-0.36, -0.46], [-0.36, 0.46], [0.6, 0]].map(([x, y]) => [x * 1.1, y * 1.1]);
+    const cx = (P[0][0] + P[1][0] + P[2][0]) / 3, cy = (P[0][1] + P[1][1] + P[2][1]) / 3;
+    const rad = 0.05, d = 0.07, sideR = 0.025, seg = 8;
+    const Q = P.map(([x, y]) => { const dx = cx - x, dy = cy - y, l = Math.hypot(dx, dy); return [x + dx / l * rad * 1.7, y + dy / l * rad * 1.7]; });
+    const nrmz = (x, y) => { const l = Math.hypot(x, y); return [x / l, y / l]; };
+    const outline = [];
+    for (let i = 0; i < 3; i++) {
+      const pv = Q[(i + 2) % 3], cu = Q[i], nx = Q[(i + 1) % 3];
+      const ein = nrmz(cu[0] - pv[0], cu[1] - pv[1]), eout = nrmz(nx[0] - cu[0], nx[1] - cu[1]);
+      const a0 = Math.atan2(ein[0], -ein[1]), a1 = Math.atan2(eout[0], -eout[1]);   // normali uscenti (contorno orario)
+      let dl = a1 - a0; while (dl > 0) dl -= Math.PI * 2; while (dl <= -Math.PI * 2) dl += Math.PI * 2;
+      for (let k = 0; k <= seg; k++) { const t = a0 + dl * k / seg; outline.push([cu[0] + Math.cos(t) * rad, cu[1] + Math.sin(t) * rad, Math.cos(t), Math.sin(t)]); }
+    }
+    const pos = [], nrm = [], idx = [], n = outline.length;
+    [[d, 1], [-d, -1]].forEach(([z, sg]) => {
+      const c0 = pos.length / 3; pos.push(cx, cy, z); nrm.push(0, 0, sg);
+      outline.forEach(([x, y]) => { const ex = (x - cx) * 0.45, ey = (y - cy) * 0.45, l = Math.hypot(ex, ey, 1); pos.push(x, y, z); nrm.push(ex / l, ey / l, sg / l); });
+      for (let i = 0; i < n; i++) idx.push(c0, c0 + 1 + i, c0 + 1 + (i + 1) % n);
+    });
+    const r0 = pos.length / 3, rows = 8;
+    for (let j = 0; j <= rows; j++) {
+      const t = -Math.PI / 2 + Math.PI * j / rows, z = Math.sin(t) * d, k = Math.cos(t);
+      outline.forEach(([x, y, nx, ny]) => { pos.push(x + nx * k * sideR, y + ny * k * sideR, z); nrm.push(nx * k, ny * k, Math.sin(t)); });
+    }
+    for (let j = 0; j < rows; j++) for (let i = 0; i < n; i++) { const a = r0 + j * n + i, b = r0 + j * n + (i + 1) % n; idx.push(a, b, a + n, b, b + n, a + n); }
+    const tri = { pos: new Float32Array(pos), nrm: new Float32Array(nrm), idx: new Uint16Array(idx) };
+    return { ring, tri };
+  };
+  // gelato: cono a cialda, bordo e pallina di pistacchio irregolare
+  L.gelatoMeshes = function () {
+    const cone = L.grid(48, 24, (u, v) => { const a = u * Math.PI * 2, y = -1.05 + v * 1.25, r = 0.005 + v * 0.37; return [r * Math.cos(a), y, r * Math.sin(a)]; });
+    const rim = L.grid(64, 10, (u, v) => { const a = u * Math.PI * 2, b = v * Math.PI * 2, rr = 0.39 + 0.045 * Math.cos(b); return [rr * Math.cos(a), 0.22 + 0.045 * Math.sin(b), rr * Math.sin(a)]; });
+    const h = (x, y, z) => Math.sin(x * 5.1 + y * 2.3) * 0.5 + Math.sin(y * 6.7 - z * 3.9) * 0.3 + Math.sin(z * 7.3 + x * 4.1) * 0.2;
+    const scoop = L.grid(64, 40, (u, v) => {
+      const a = u * Math.PI * 2, t = v * Math.PI; let x = Math.sin(t) * Math.cos(a), y = -Math.cos(t), z = Math.sin(t) * Math.sin(a);
+      let r = 0.47 * (1 + 0.07 * h(x, y, z));
+      let py = 0.62 + y * r * 0.92;
+      const lip = 0.3 + 0.035 * Math.sin(a * 7) + 0.02 * Math.sin(a * 13 + 1); // bordo che cola sul cono
+      if (py < lip) { const k = (lip - py); py = lip - k * 0.25; r *= 1 + Math.min(k, 0.25) * 0.9; }
+      return [x * r, py, z * r];
+    });
+    return { cone, rim, scoop };
+  };
+})();
+
+/* ---------- gelato 3D nella scheda dello spot «Anche voi?» ---------- */
+(() => {
+  const cv = document.getElementById('gelato3d'); if (!cv) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gl = cv.getContext('webgl', { alpha: true, antialias: true, premultipliedAlpha: true });
+  if (!gl) { cv.remove(); return; }
+  const L = window.L3D, prg = L.program(gl); if (!prg) { cv.remove(); return; }
+  const g = L.gelatoMeshes(), cone = L.upload(gl, g.cone), rim = L.upload(gl, g.rim), scoop = L.upload(gl, g.scoop);
+  gl.enable(gl.DEPTH_TEST); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.clearColor(0, 0, 0, 0);
+  let vis = false, mx = 0, my = 0, tmx = 0, tmy = 0, t0 = performance.now(), raf = 0;
+  new IntersectionObserver(es => { vis = es[0].isIntersecting; if (vis && !raf) raf = requestAnimationFrame(frame); }, { rootMargin: '100px' }).observe(cv);
+  addEventListener('pointermove', e => { tmx = e.clientX / innerWidth * 2 - 1; tmy = e.clientY / innerHeight * 2 - 1; }, { passive: true });
+  function size() { const d = Math.min(devicePixelRatio || 1, 2), w = cv.clientWidth, h = cv.clientHeight; if (cv.width !== Math.round(w * d)) { cv.width = Math.round(w * d); cv.height = Math.round(h * d); } gl.viewport(0, 0, cv.width, cv.height); return w / h; }
+  function frame(now) {
+    raf = 0; if (!vis) return;
+    const t = reduce ? 2 : (now - t0) / 1000, a = size();
+    if (L.tilt.on) { tmx = L.tilt.x; tmy = L.tilt.y; }
+    mx += (tmx - mx) * 0.06; my += (tmy - my) * 0.06;
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.useProgram(prg.p);
+    const cam = [0, 0.15, 3.6];
+    const VP = L.M.mul(L.M.persp(0.62, a, 0.1, 20), L.M.trans(-cam[0], -cam[1], -cam[2]));
+    gl.uniformMatrix4fv(prg.u.uVP, false, VP); gl.uniform3fv(prg.u.uCam, cam); gl.uniform1f(prg.u.uAlpha, 1); gl.uniform1f(prg.u.uTime, t); gl.uniform1f(prg.u.uEnvRot, t * 0.25);
+    let model = L.M.mul(L.M.trans(0, Math.sin(t * 1.3) * 0.06, 0), L.M.mul(L.M.rotZ(-0.22 + mx * 0.12), L.M.mul(L.M.rotX(0.18 + my * 0.15), L.M.rotY(t * 0.7 + mx * 0.6))));
+    model = L.M.mul(model, L.M.scale(1.05));
+    L.draw(gl, prg, cone, model, { base: [0.86, 0.6, 0.3], rough: 0.8, mode: 1 });
+    L.draw(gl, prg, rim, model, { base: [0.8, 0.55, 0.26], rough: 0.7, mode: 1 });
+    L.draw(gl, prg, scoop, model, { base: [0.66, 0.79, 0.42], rough: 0.55, mode: 2 });
+    if (!reduce) raf = requestAnimationFrame(frame);
+  }
+})();
+
+/* ---------- ciak 3D: batte a ogni passaggio del metodo ---------- */
+(() => {
+  const el = document.getElementById('clap'); if (!el) return;
+  const num = document.getElementById('clap-n'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let last = -1, timer = 0;
+  window.__clap = (sp, r) => {
+    const idx = Math.max(0, Math.min(3, Math.floor(sp * 4 - 0.05)));
+    // la lavagnetta gira piano mentre scorri
+    const q = Math.max(-1, Math.min(1, (r.top + r.height / 2 - innerHeight / 2) / innerHeight));
+    if (!reduce) { el.style.setProperty('--cry', (-24 + q * 22).toFixed(1) + 'deg'); el.style.setProperty('--crx', (10 - q * 6).toFixed(1) + 'deg'); }
+    if (sp <= 0 || idx === last) return;
+    last = idx; num.textContent = String(idx + 1).padStart(2, '0');
+    if (reduce) return;
+    el.classList.add('shut'); clearTimeout(timer); timer = setTimeout(() => el.classList.remove('shut'), 520);
+  };
+})();
+
+/* ---------- schede inclinabili con riflesso dorato ---------- */
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const cards = [...document.querySelectorAll('.work-media, .plan')];
+  cards.forEach(c => { const s = document.createElement('span'); s.className = 'sheen'; s.setAttribute('aria-hidden', 'true'); c.appendChild(s); });
+  if (fine) {
+    cards.forEach(c => {
+      const max = c.classList.contains('plan') ? 7 : 9;
+      c.addEventListener('pointermove', e => {
+        const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        c.style.setProperty('--ty', ((x - 0.5) * 2 * max).toFixed(2) + 'deg'); c.style.setProperty('--tx', (-(y - 0.5) * 2 * max).toFixed(2) + 'deg');
+        c.style.setProperty('--gx', (x * 100).toFixed(1) + '%'); c.style.setProperty('--gy', (y * 100).toFixed(1) + '%');
+        c.classList.add('tilting');
+      });
+      c.addEventListener('pointerleave', () => { c.style.setProperty('--tx', '0deg'); c.style.setProperty('--ty', '0deg'); c.classList.remove('tilting'); });
+    });
+  } else {
+    // telefono: le schede visibili si inclinano con il telefono, il riflesso scivola
+    const L = window.L3D;
+    (function loop() {
+      if (L.tilt.on) {
+        const vis = cards.filter(c => { const r = c.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; });
+        vis.forEach(c => {
+          c.style.setProperty('--ty', (L.tilt.x * 6).toFixed(2) + 'deg'); c.style.setProperty('--tx', (-L.tilt.y * 6).toFixed(2) + 'deg');
+          c.style.setProperty('--gx', (50 + L.tilt.x * 45).toFixed(1) + '%'); c.style.setProperty('--gy', (35 + L.tilt.y * 40).toFixed(1) + '%');
+          c.classList.add('tilting');
+        });
+      }
+      setTimeout(() => requestAnimationFrame(loop), 50);
+    })();
+  }
+})();
+</script>
+<script>
 /* ---------- Polvere di luce: una scena di particelle WebGL che si trasforma allo scroll ---------- */
 (() => {
   const cv = document.getElementById('dust');
   if (!cv) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true, depth: false, powerPreference: 'high-performance' });
+  const gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true, depth: true, powerPreference: 'high-performance' });
   if (!gl) { cv.remove(); return; }
   const mobile = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
   const N = mobile ? 5000 : 12000;
@@ -1265,7 +1573,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
   /* ---- WebGL ---- */
   const vs = `
 attribute vec3 aFrom; attribute vec3 aTo; attribute vec4 aSeed;
-uniform float uT, uTime, uPix, uScale; uniform vec2 uMouse, uMouseW; uniform vec3 uOffset; uniform mat4 uProj;
+uniform float uT, uTime, uPix, uScale, uDim; uniform vec2 uMouse, uMouseW; uniform vec3 uOffset; uniform mat4 uProj;
 varying float vA, vHue;
 mat3 rotY(float a){ float c=cos(a), s=sin(a); return mat3(c,0.,-s, 0.,1.,0., s,0.,c); }
 mat3 rotX(float a){ float c=cos(a), s=sin(a); return mat3(1.,0.,0., 0.,c,s, 0.,-s,c); }
@@ -1282,7 +1590,7 @@ void main(){
   vec4 mv = vec4(p.x, p.y, p.z - 6.0, 1.0);
   gl_Position = uProj * mv;
   gl_PointSize = (2.0 + aSeed.y*3.6) * uPix * (4.2 / -mv.z);
-  vA = (0.35 + 0.65*aSeed.w) * (0.72 + 0.28*sin(uTime*(1.2 + aSeed.z*3.5) + aSeed.x*30.));
+  vA = (0.35 + 0.65*aSeed.w) * (0.72 + 0.28*sin(uTime*(1.2 + aSeed.z*3.5) + aSeed.x*30.)) * (1.0 - 0.5*uDim);
   vHue = aSeed.z;
 }`;
   const fs = `
@@ -1302,7 +1610,12 @@ void main(){
   const seeds = new Float32Array(N * 4); for (let i = 0; i < N * 4; i++) seeds[i] = rnd();
   const from = new Float32Array(N * 3), to = new Float32Array(N * 3);
   const buf = (data, loc, size, usage) => { const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, data, usage); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0); return b; };
-  const bFrom = buf(from, A('aFrom'), 3, gl.DYNAMIC_DRAW), bTo = buf(to, A('aTo'), 3, gl.DYNAMIC_DRAW); buf(seeds, A('aSeed'), 4, gl.STATIC_DRAW);
+  const bFrom = buf(from, A('aFrom'), 3, gl.DYNAMIC_DRAW), bTo = buf(to, A('aTo'), 3, gl.DYNAMIC_DRAW), bSeed = buf(seeds, A('aSeed'), 4, gl.STATIC_DRAW);
+  const rebind = () => [[bFrom, 'aFrom', 3], [bTo, 'aTo', 3], [bSeed, 'aSeed', 4]].forEach(([b, n, k]) => { const l = A(n); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, k, gl.FLOAT, false, 0, 0); });
+  /* ---- logo d'oro in 3D: nasce quando la polvere si è raccolta nel simbolo ---- */
+  const L3 = window.L3D, gold = L3 ? L3.program(gl) : null;
+  let goldMesh = null, goldA = 0;
+  if (gold) { const lm = L3.logoMeshes(); goldMesh = { ring: L3.upload(gl, lm.ring), tri: L3.upload(gl, lm.tri) }; }
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); gl.clearColor(0, 0, 0, 0);
 
   /* ---- stato e trasformazioni ---- */
@@ -1333,11 +1646,11 @@ void main(){
   const place = mobile
     ? { hero: [0, 1.2, 0.78], 'manifesto-sec': [0, 0, 1.1], film: [0.6, -0.9, 0.6], stili: [0.4, 1.35, 0.75], servizi: [0.5, 1.4, 0.7], metodo: [0, 1.4, 0.7], prezzi: [0.5, 1.4, 0.7], contatti: [0.5, 1.3, 0.75] }
     : { hero: [1.35, 0.05, 1], 'manifesto-sec': [0, 0, 1.2], film: [-1.0, 1.15, 0.8], stili: [1.1, 0.1, 1.0], servizi: [1.5, 0.9, 0.85], metodo: [1.1, -0.9, 0.95], prezzi: [1.5, 0.7, 0.85], contatti: [1.5, 1.0, 0.9] };
-  let want = cur, off = [0, 0, 1], offCur = [0, 0, 1], started = false;
+  let want = cur, off = [0, 0, 1], offCur = [0, 0, 1], started = false, actId = 'hero';
   function pick() {
     let act = map[0];
     for (const m of map) { if (m[0].getBoundingClientRect().top <= innerHeight * 0.55) act = m; }
-    want = act[0].dataset.shape || act[1]; off = place[act[0].id] || [0, 0, 1];
+    want = act[0].dataset.shape || act[1]; off = place[act[0].id] || [0, 0, 1]; actId = act[0].id;
   }
   addEventListener('scroll', pick, { passive: true }); pick();
   if (!reduce) { want = 'dust'; setTimeout(() => { started = true; pick(); }, 350); } else started = true;
@@ -1373,12 +1686,30 @@ void main(){
     const dt = Math.min(0.12, (now - last) / 1000); last = now;
     if (started && want !== cur) morphTo(want);
     if (uT < 2) uT += dt / 1.7;
+    if (L3 && L3.tilt.on && mobile) { tmx = L3.tilt.x; tmy = L3.tilt.y; }
     mx += (tmx - mx) * 0.04; my += (tmy - my) * 0.04;
     mwx += (tmwx - mwx) * 0.18; mwy += (tmwy - mwy) * 0.18;
     for (let i = 0; i < 3; i++) offCur[i] += (off[i] - offCur[i]) * 0.035;
     if (window.__cinCover) { // lo schermo cinema è pieno e opaco: inutile disegnare dietro
       if (!document.hidden) requestAnimationFrame(frame); else setTimeout(() => requestAnimationFrame(frame), 300); return; }
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    const tNow = reduce ? 10 : (now - t0) / 1000;
+    const goldT = (gold && cur === 'logo' && actId === 'hero' && uT > 1.25) ? 1 : 0;
+    goldA = reduce ? goldT : goldA + (goldT - goldA) * Math.min(1, dt * (goldT ? 2.2 : 6));
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    if (goldA > 0.01) {
+      gl.enable(gl.DEPTH_TEST); gl.depthMask(true); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.useProgram(gold.p);
+      const s = (mobile ? 0.66 : Math.min(1.15, innerWidth / 1280 + 0.3)) * offCur[2];
+      let model = L3.M.mul(L3.M.rotX(-my * 0.18 + Math.sin(tNow * 0.23) * 0.08), L3.M.rotY(Math.sin(tNow * 0.19) * 0.32 + mx * 0.35));
+      model = L3.M.mul(L3.M.mul(L3.M.trans(offCur[0], offCur[1], -6), L3.M.scale(s)), model);
+      gl.uniformMatrix4fv(gold.u.uVP, false, proj); gl.uniform3f(gold.u.uCam, 0, 0, 0);
+      gl.uniform1f(gold.u.uAlpha, goldA); gl.uniform1f(gold.u.uTime, tNow); gl.uniform1f(gold.u.uEnvRot, tNow * 0.18 + mx * 0.6);
+      const mat = { base: [1.0, 0.76, 0.33], metal: 1, rough: 0.22 };
+      L3.draw(gl, gold, goldMesh.ring, model, mat); L3.draw(gl, gold, goldMesh.tri, model, mat);
+      gl.disable(gl.DEPTH_TEST); gl.blendFunc(gl.ONE, gl.ONE);
+      gl.useProgram(prog); rebind();
+    }
+    gl.uniform1f(U('uDim'), goldA);
     gl.uniform1f(U('uT'), uT); gl.uniform1f(U('uTime'), reduce ? 10 : (now - t0) / 1000);
     gl.uniform2f(U('uMouse'), mx, my); gl.uniform2f(U('uMouseW'), mwx, mwy); gl.uniform3f(U('uOffset'), offCur[0], offCur[1], offCur[2]);
     gl.drawArrays(gl.POINTS, 0, N);
