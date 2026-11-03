@@ -384,6 +384,7 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; min-width
 .seg input:focus-visible + label { outline: 2px solid var(--gold); outline-offset: 2px; }
 form .pill { width: 100%; margin-top: 6px; }
 .note { font-size: 13px; color: var(--muted); text-align: center; }
+.note a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
 footer { color: var(--muted); font-size: 13px; padding-block: 0 40px; }
 .foot { border-top: 1px solid var(--line); padding-top: 22px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 @media (max-width: 860px) { .contact-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; } .contact h2 { font-size: clamp(44px, 15vw, 96px); } .contact .mail { font-size: clamp(22px, 6.4vw, 40px); } }
@@ -1192,22 +1193,40 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
   })();
 
   /* ---------- modulo contatti ---------- */
-  // online il modulo viene inviato davvero (FormSubmit → email dello studio); nell'anteprima mostra solo un avviso
-  document.getElementById('lead').addEventListener('submit', e => {
+  // invio in background: Web3Forms se c'è la chiave, altrimenti FormSubmit; se nessuno risponde, la richiesta parte comunque via email
+  const WEB3FORMS_KEY = '';                      // chiave di accesso di Web3Forms (si riceve gratis via email su web3forms.com)
+  const STUDIO_MAIL = 'lumotionstudioia@gmail.com';
+  document.getElementById('lead').addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = e.target, note = document.getElementById('note'), btn = f.querySelector('button[type="submit"]');
     const online = location.protocol === 'https:' && !/claude\.ai$|claudeusercontent\.com$/.test(location.hostname);
-    if (!online) { e.preventDefault(); document.getElementById('note').textContent = 'Anteprima: l’invio verrà collegato quando il sito sarà online.'; return; }
-    const f = e.target, miss = ['f-nome', 'f-cont', 'f-msg'].filter(id => !document.getElementById(id).value.trim());
-    if (miss.length) { e.preventDefault(); document.getElementById('note').textContent = 'Compila nome, contatto e messaggio.'; document.getElementById(miss[0]).focus(); return; }
-    // pagina di ringraziamento sullo stesso dominio da cui si invia
-    document.getElementById('f-next').value = new URL('grazie.html', location.href).href;
-    // se il contatto è un'email, la risposta dalla casella dello studio va direttamente al cliente
-    const cont = document.getElementById('f-cont').value.trim();
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cont)) {
-      let r = f.querySelector('input[name="_replyto"]');
-      if (!r) { r = document.createElement('input'); r.type = 'hidden'; r.name = '_replyto'; f.appendChild(r); }
-      r.value = cont;
-    }
-    document.getElementById('note').textContent = 'Invio in corso…';
+    if (!online) { note.textContent = 'Anteprima: l’invio verrà collegato quando il sito sarà online.'; return; }
+    const miss = ['f-nome', 'f-cont', 'f-msg'].filter(id => !document.getElementById(id).value.trim());
+    if (miss.length) { note.textContent = 'Compila nome, contatto e messaggio.'; document.getElementById(miss[0]).focus(); return; }
+    if (f.querySelector('input[name="_honey"]').value) return;     // robot
+    const v = id => document.getElementById(id).value.trim();
+    const data = { nome: v('f-nome'), attivita: v('f-att'), servizio: (f.querySelector('input[name="servizio"]:checked') || {}).value || '', contatto: v('f-cont'), messaggio: v('f-msg') };
+    const isMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contatto);
+    const subject = 'Nuova richiesta dal sito Lumotion — ' + data.nome;
+    btn.disabled = true; note.textContent = 'Invio in corso…';
+    const post = async (url, body) => {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 12000);
+      try {
+        const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body), signal: ctl.signal });
+        const j = await r.json().catch(() => ({}));
+        return r.ok && (j.success === true || j.success === 'true');
+      } catch (err) { return false; } finally { clearTimeout(t); }
+    };
+    let ok = false;
+    if (WEB3FORMS_KEY) ok = await post('https://api.web3forms.com/submit', { access_key: WEB3FORMS_KEY, subject, from_name: 'Sito Lumotion', ...data, ...(isMail ? { email: data.contatto, replyto: data.contatto } : {}) });
+    if (!ok) ok = await post('https://formsubmit.co/ajax/' + STUDIO_MAIL, { _subject: subject, _template: 'table', _captcha: 'false', ...data, ...(isMail ? { _replyto: data.contatto } : {}) });
+    if (ok) { location.href = new URL('grazie.html', location.href).href; return; }
+    // piano B: la richiesta non si perde, parte dalla posta di chi scrive con il testo già pronto
+    btn.disabled = false;
+    const body = `Nome: ${data.nome}\nAttività: ${data.attivita}\nServizio: ${data.servizio}\nContatto: ${data.contatto}\n\n${data.messaggio}`;
+    const mail = `mailto:${STUDIO_MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    note.innerHTML = 'Il modulo non risponde in questo momento. Invia la richiesta con un tocco: <a href="' + mail + '">invia con la tua email</a> oppure <a href="https://www.instagram.com/lumotion.studio/" target="_blank" rel="noopener">scrivici su Instagram</a>. Il testo è già pronto.';
+    try { await navigator.clipboard.writeText(body); } catch (err) {}
   });
 })();
 </script>
