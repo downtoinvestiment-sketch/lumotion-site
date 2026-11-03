@@ -588,7 +588,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
         <h2 class="cond" id="cin-title">Anche la tua attività è un film.</h2>
         <p class="lead">Video super realistici e una sola storia: stacchi sugli accenti della musica, rallentatore, luce e grana curate inquadratura per inquadratura. Sembra girato, ma non esiste un set.</p>
         <div class="cin-row">
-          <div class="cin-price"><span>Da</span><strong class="cond goldfill">149 €</strong><small>15–30 s · 9:16 + 1:1 · musica originale · versione per le inserzioni · 2 revisioni</small></div>
+          <div class="cin-price"><span>Da</span><strong class="cond goldfill">149 €</strong><small>15 s · 30 s a 199 € · 9:16 + 1:1 · musica originale · versione per le inserzioni · 2 revisioni</small></div>
           <button class="pill ghost" type="button" data-open-player data-src="media/gvarw-full.mp4" data-poster="media/gvarw-poster.jpg" data-title="Spot di gv.arw, fotografo"><svg aria-hidden="true"><use href="#play"></use></svg>Guarda il film con l'audio</button>
           <a class="pill gold" href="#prezzi" data-pick="cinema">Lo voglio per la mia attività</a>
         </div>
@@ -750,11 +750,8 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
         <h3>Il tuo preventivo</h3>
         <div><strong id="sum-name" style="font-size:20px"></strong></div>
         <div class="extras" id="extras">
-          <div class="extra"><div><div class="nm">Scene AI in più</div><div class="pr">20 € ciascuna</div></div><div class="stepper"><button type="button" data-step="scene" data-d="-1" aria-label="Togli una scena">−</button><output id="o-scene">0</output><button type="button" data-step="scene" data-d="1" aria-label="Aggiungi una scena">+</button></div></div>
-          <div class="extra"><div><div class="nm">Formati in più</div><div class="pr">20 € ciascuno</div></div><div class="stepper"><button type="button" data-step="fmt" data-d="-1" aria-label="Togli un formato">−</button><output id="o-fmt">0</output><button type="button" data-step="fmt" data-d="1" aria-label="Aggiungi un formato">+</button></div></div>
-          <div class="extra"><div><div class="nm">Revisioni in più</div><div class="pr">25 € ciascuna</div></div><div class="stepper"><button type="button" data-step="rev" data-d="-1" aria-label="Togli una revisione">−</button><output id="o-rev">0</output><button type="button" data-step="rev" data-d="1" aria-label="Aggiungi una revisione">+</button></div></div>
-          <div class="extra"><div><div class="nm">Consegna in 48 ore</div><div class="pr">+30% del pacchetto</div></div><button type="button" class="switch" id="sw-rush" role="switch" aria-checked="false" aria-label="Consegna in 48 ore"></button></div>
-          <div class="extra" id="x-locale" hidden><div><div class="nm">Girato nel tuo locale</div><div class="pr">+50 € · da 5 foto che ci mandi</div></div><button type="button" class="switch" id="sw-locale" role="switch" aria-checked="false" aria-label="Girato nel tuo locale"></button></div>
+          <div class="extra"><div><div class="nm">Secondi in più</div><div class="pr">+5 secondi · 17 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec" data-d="-1" aria-label="Togli 5 secondi">−</button><output id="o-sec">0</output><button type="button" data-step="sec" data-d="1" aria-label="Aggiungi 5 secondi">+</button></div></div>
+          <div class="extra"><div><div class="nm">Consegna entro 48 ore</div><div class="pr">+30% del pacchetto</div></div><button type="button" class="switch" id="sw-rush" role="switch" aria-checked="false" aria-label="Consegna entro 48 ore"></button></div>
         </div>
         <div class="total"><span class="u" id="sum-unit">Totale</span><span class="v" id="sum-total">149 €</span></div>
         <p class="note-s" id="sum-note">Prezzi IVA esclusa.</p>
@@ -1031,8 +1028,9 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
   (() => {
     const PLANS = {
       spot: [
-        { id: 'reel', name: 'Reel AI', price: 49, unit: '', items: ['Fino a 3 scene AI', '10–15 secondi', 'Mascotte inclusa', '1 revisione · 9:16'], extras: true },
-        { id: 'cinema', name: 'Spot Cinema', price: 149, unit: '', star: 'Super realistico', items: ['Video super realistico', '4–5 scene AI coerenti', '15–30 secondi, una sola storia', 'Montaggio sugli accenti della musica', 'Musica originale e logo finale', 'Versione senza testo per le inserzioni', '2 revisioni · 9:16 + 1:1'], extras: true, locale: true }
+        { id: 'reel', name: 'Reel AI', price: 49, unit: '', sec: 15, items: ['Fino a 3 scene AI', '10–15 secondi', 'Mascotte inclusa', '1 revisione · 9:16'], extras: true },
+        { id: 'cinema', name: 'Spot Cinema 15\u00a0s', price: 149, unit: '', sec: 15, star: 'Super realistico', items: ['Video super realistico', '15 secondi, una sola storia', '4–5 scene AI coerenti', 'Montaggio sugli accenti della musica', 'Musica originale e logo finale', 'Versione senza testo per le inserzioni', '2 revisioni · 9:16 + 1:1'], extras: true },
+        { id: 'cinema30', name: 'Spot Cinema 30\u00a0s', price: 199, unit: '', sec: 30, star: 'Super realistico', items: ['Video super realistico', '30 secondi, una sola storia', '4–5 scene AI coerenti', 'Montaggio sugli accenti della musica', 'Musica originale e logo finale', 'Versione senza testo per le inserzioni', '2 revisioni · 9:16 + 1:1'], extras: true }
       ],
       mese: [
         { id: 'reelmese', name: 'Pacchetto Reel AI', price: 169, unit: '/mese', items: ['4 Reel AI al mese', 'Fino a 3 scene AI ciascuno', '10–15 secondi · 9:16', 'Risparmi 27 € al mese'], extras: false },
@@ -1050,6 +1048,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
     const STRIPE = {
       reel: 'https://buy.stripe.com/3cIdRbfks6It6f3b5E0000g',
       cinema: 'https://buy.stripe.com/00wcN7ego4Al46V3Dc0000h',
+      cinema30: 'https://buy.stripe.com/9B65kF1tC6ItbznehQ0000i',
       reelmese: 'https://buy.stripe.com/9B69AV8W4feZ6f31v40000d',
       cinemamese: 'https://buy.stripe.com/5kQ9AV1tC1o90UJ8Xw0000e',
       lumopro: 'https://buy.stripe.com/9B614pdck9UFavj4Hg0000f',
@@ -1059,7 +1058,8 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
       landing: 'https://buy.stripe.com/bJebJ3dckfeZgTHehQ00008'
     };
     const box = document.getElementById('plans');
-    const st = { tab: 'spot', plan: 'cinema', scene: 0, fmt: 0, rev: 0, rush: false, locale: false };
+    const SEC_EUR = 17, SEC_MAX = 6; // ogni +5 secondi costa 17 € (15 s = 50 €, arrotondato)
+    const st = { tab: 'spot', plan: 'cinema', sec: 0, rush: false };
     const fmtEUR = v => (Math.round(v * 100) / 100).toLocaleString('it-IT', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
     let shown = 149;
     function animateTo(v, el) {
@@ -1084,27 +1084,24 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
     function update() {
       const p = current(), ex = document.getElementById('extras');
       ex.classList.toggle('disabled-x', !p.extras);
-      if (!p.extras) { st.scene = st.fmt = st.rev = 0; st.rush = false; }
-      if (!p.locale) st.locale = false;
-      document.getElementById('x-locale').hidden = !p.locale;
-      ['scene', 'fmt', 'rev'].forEach(k => document.getElementById('o-' + k).textContent = st[k]);
+      if (!p.extras) { st.sec = 0; st.rush = false; }
+      document.getElementById('o-sec').textContent = st.sec ? `+${st.sec * 5} s` : '0';
       document.getElementById('sw-rush').setAttribute('aria-checked', st.rush ? 'true' : 'false');
-      document.getElementById('sw-locale').setAttribute('aria-checked', st.locale ? 'true' : 'false');
-      let tot = p.price + st.scene * 20 + st.fmt * 20 + st.rev * 25 + (st.locale ? 50 : 0);
+      let tot = p.price + st.sec * SEC_EUR;
       if (st.rush) tot += Math.round(p.price * 0.3);
-      document.getElementById('sum-name').textContent = p.name;
+      document.getElementById('sum-name').textContent = p.sec && st.sec ? `${p.name} + ${st.sec * 5} s (${p.sec + st.sec * 5} secondi)` : p.name;
       document.getElementById('sum-unit').textContent = p.unit ? 'Totale al mese' : 'Totale';
       animateTo(tot, document.getElementById('sum-total'));
       document.getElementById('sum-note').textContent = p.extras ? 'Prezzi IVA esclusa.' : 'Prezzi IVA esclusa. Gli extra sono disponibili sugli spot singoli.';
       // pulsante "Paga ora": apre il checkout Stripe del pacchetto, con un riferimento alla configurazione scelta
       const pay = document.getElementById('sum-pay'), pn = document.getElementById('pay-note'), link = STRIPE[p.id];
-      const hasExtra = st.scene || st.fmt || st.rev || st.rush || st.locale;
+      const hasExtra = st.sec || st.rush;
       pay.hidden = pn.hidden = !link;
       if (link) {
         pay.textContent = p.unit ? `Attiva · ${fmtEUR(tot)}/mese` : `Paga ora · ${fmtEUR(tot)}`;
-        const ref = [p.id, st.scene && `scene${st.scene}`, st.fmt && `formati${st.fmt}`, st.rev && `revisioni${st.rev}`, st.rush && '48ore', st.locale && 'locale'].filter(Boolean).join('_');
+        const ref = [p.id, st.sec && `piu${st.sec * 5}sec`, st.rush && '48ore'].filter(Boolean).join('_');
         pay.href = `${link}?client_reference_id=${encodeURIComponent(ref.slice(0, 200))}&locale=it`;
-        pn.textContent = hasExtra ? 'Pagamento sicuro con Stripe. Nel checkout, sotto il pacchetto, aggiungi gli extra che hai scelto qui.' : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
+        pn.textContent = hasExtra ? `Pagamento sicuro con Stripe. Nel checkout, sotto il pacchetto, aggiungi gli extra che hai scelto qui${st.sec ? ` («5 secondi in più» × ${st.sec})` : ''}.` : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
       }
     }
     function setTab(tab, plan) {
@@ -1113,18 +1110,16 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
       renderPlans(); update();
     }
     document.querySelectorAll('.tabs button').forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
-    document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.step; st[k] = Math.max(0, Math.min(10, st[k] + (+b.dataset.d))); update(); }));
+    document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.step; st[k] = Math.max(0, Math.min(SEC_MAX, st[k] + (+b.dataset.d))); update(); }));
     document.getElementById('sw-rush').addEventListener('click', () => { st.rush = !st.rush; update(); });
-    document.getElementById('sw-locale').addEventListener('click', () => { st.locale = !st.locale; update(); });
     document.querySelectorAll('[data-pick]').forEach(a => a.addEventListener('click', () => setTab('spot', a.dataset.pick)));
     document.querySelectorAll('.svc a[data-tab]').forEach(a => a.addEventListener('click', () => setTab(a.dataset.tab)));
     document.getElementById('sum-cta').addEventListener('click', () => {
       const p = current(), parts = [p.name];
-      if (st.scene) parts.push(`${st.scene} scene AI in più`); if (st.fmt) parts.push(`${st.fmt} formati in più`);
-      if (st.rev) parts.push(`${st.rev} revisioni in più`); if (st.rush) parts.push('consegna in 48 ore'); if (st.locale) parts.push('girato nel mio locale');
+      if (st.sec) parts.push(`${st.sec * 5} secondi in più (${p.sec + st.sec * 5} secondi in tutto)`); if (st.rush) parts.push('consegna entro 48 ore');
       const msg = document.getElementById('f-msg');
       msg.value = `Vorrei un preventivo per: ${parts.join(', ')} (${document.getElementById('sum-total').textContent}${p.unit}).\n`;
-      const map = { reel: 's1', cinema: 's1', reelmese: 's1', cinemamese: 's1', completo: 's2', lumopro: 's2', landing: 's3' };
+      const map = { reel: 's1', cinema: 's1', cinema30: 's1', reelmese: 's1', cinemamese: 's1', completo: 's2', lumopro: 's2', landing: 's3' };
       const r = document.getElementById(map[p.id] || 's4'); if (r) r.checked = true;
       setTimeout(() => msg.focus({ preventScroll: true }), 700);
     });
@@ -1625,7 +1620,7 @@ void main(){
     mon.classList.remove('ciak'); void mon.offsetWidth; mon.classList.add('ciak');
     const sc = get('scene'), sh = get('shot'), li = get('light'), mu = get('music');
     $('dir-sum').innerHTML = `${sc.l}.<br><span class="goldfill">${sh.l}. ${li.l}.</span>`;
-    $('dir-desc').textContent = `Con musica ${mu.l.toLowerCase()}. Questa è l'anteprima del tuo Spot Cinema: te lo creiamo vero, con la tua attività, in 15–30 secondi. Da 149 €.`;
+    $('dir-desc').textContent = `Con musica ${mu.l.toLowerCase()}. Questa è l'anteprima del tuo Spot Cinema: te lo creiamo vero, con la tua attività, da 15 o 30 secondi. Da 149 €.`;
     setTimeout(() => { pick.hidden = true; doneBox.hidden = false; pick.parentNode.classList.add('fin'); $('dir-req').focus({ preventScroll: true }); }, reduce ? 0 : 450);
   }
   function open() {
