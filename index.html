@@ -311,6 +311,7 @@ html.has-cur input, html.has-cur textarea { cursor: text; }
 .summary .pill.ghost { min-height: 46px; }
 .pay-note { text-align: center; margin-top: -4px; }
 .disabled-x { opacity: .4; pointer-events: none; }
+.extra[hidden] { display: none; }
 @media (max-width: 960px) { .cfg { grid-template-columns: minmax(0, 1fr); } .summary { position: static; } .pricing h2 { font-size: clamp(44px, 12vw, 64px); } }
 
 /* ---------- 9. parliamone ---------- */
@@ -750,9 +751,9 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
         <h3>Il tuo preventivo</h3>
         <div><strong id="sum-name" style="font-size:20px"></strong></div>
         <div class="extras" id="extras">
-          <div class="extra"><div><div class="nm">+5 secondi</div><div class="pr">17 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec" data-d="-1" aria-label="Togli 5 secondi">−</button><output id="o-sec">0</output><button type="button" data-step="sec" data-d="1" aria-label="Aggiungi 5 secondi">+</button></div></div>
-          <div class="extra"><div><div class="nm">+10 secondi</div><div class="pr">33 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec10" data-d="-1" aria-label="Togli 10 secondi">−</button><output id="o-sec10">0</output><button type="button" data-step="sec10" data-d="1" aria-label="Aggiungi 10 secondi">+</button></div></div>
-          <div class="extra"><div><div class="nm">Consegna entro 48 ore</div><div class="pr">+30% del pacchetto</div></div><button type="button" class="switch" id="sw-rush" role="switch" aria-checked="false" aria-label="Consegna entro 48 ore"></button></div>
+          <div class="extra"><div><div class="nm">+5 secondi</div><div class="pr" id="pr-sec">17 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec" data-d="-1" aria-label="Togli 5 secondi">−</button><output id="o-sec">0</output><button type="button" data-step="sec" data-d="1" aria-label="Aggiungi 5 secondi">+</button></div></div>
+          <div class="extra"><div><div class="nm">+10 secondi</div><div class="pr" id="pr-sec10">33 € ciascuno</div></div><div class="stepper"><button type="button" data-step="sec10" data-d="-1" aria-label="Togli 10 secondi">−</button><output id="o-sec10">0</output><button type="button" data-step="sec10" data-d="1" aria-label="Aggiungi 10 secondi">+</button></div></div>
+          <div class="extra" id="x-rush"><div><div class="nm">Consegna entro 48 ore</div><div class="pr">+30% del pacchetto</div></div><button type="button" class="switch" id="sw-rush" role="switch" aria-checked="false" aria-label="Consegna entro 48 ore"></button></div>
         </div>
         <div class="total"><span class="u" id="sum-unit">Totale</span><span class="v" id="sum-total">149 €</span></div>
         <p class="note-s" id="sum-note">Prezzi IVA esclusa.</p>
@@ -1035,7 +1036,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
       ],
       mese: [
         { id: 'reelmese', name: 'Pacchetto Reel AI', price: 169, unit: '/mese', items: ['4 Reel AI al mese', 'Fino a 3 scene AI ciascuno', '10–15 secondi · 9:16', 'Risparmi 27 € al mese'], extras: false },
-        { id: 'cinemamese', name: 'Pacchetto Cinema', price: 499, unit: '/mese', star: 'Super realistico', items: ['4 Spot Cinema al mese', 'Video super realistici', '15–30 secondi · 9:16 + 1:1', 'Risparmi 97 € al mese'], extras: false },
+        { id: 'cinemamese', name: 'Pacchetto Cinema', price: 499, unit: '/mese', sec: 15, spots: 4, star: 'Super realistico', items: ['4 Spot Cinema al mese', 'Video super realistici', '15 secondi ciascuno · 9:16 + 1:1', 'Secondi in più su richiesta', 'Risparmi 97 € al mese'], extras: 'secondi' },
         { id: 'completo', name: 'Lumotion Completo', price: 749, unit: '/mese', star: 'Tutto incluso', items: ['Sito web incluso', 'Manutenzione del sito', 'Gestione social', '4 Reel AI al mese', 'Minimo 6 mesi, nessun costo iniziale'], extras: false },
         { id: 'lumopro', name: 'Lumotion Pro', price: 949, unit: '/mese', star: 'Cinema · Super realistico', items: ['Gestione social', '4 Spot Cinema al mese', 'Video super realistici e cinematografici', 'Minimo 3 mesi'], extras: false }
       ],
@@ -1086,13 +1087,18 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
     function update() {
       const p = current(), ex = document.getElementById('extras');
       ex.classList.toggle('disabled-x', !p.extras);
+      const k = p.spots || 1; // nei mensili i secondi in più valgono per ogni spot del mese
       if (!p.extras) { st.sec = st.sec10 = 0; st.rush = false; }
+      if (p.extras === 'secondi') st.rush = false;
+      document.getElementById('x-rush').hidden = p.extras === 'secondi';
+      document.getElementById('pr-sec').textContent = k > 1 ? `${SEC_EUR * k} €/mese ciascuno · su tutti i ${k} spot` : `${SEC_EUR} € ciascuno`;
+      document.getElementById('pr-sec10').textContent = k > 1 ? `${SEC10_EUR * k} €/mese ciascuno · su tutti i ${k} spot` : `${SEC10_EUR} € ciascuno`;
       document.getElementById('o-sec').textContent = st.sec;
       document.getElementById('o-sec10').textContent = st.sec10;
       document.getElementById('sw-rush').setAttribute('aria-checked', st.rush ? 'true' : 'false');
-      let tot = p.price + st.sec * SEC_EUR + st.sec10 * SEC10_EUR;
+      let tot = p.price + (st.sec * SEC_EUR + st.sec10 * SEC10_EUR) * k;
       if (st.rush) tot += Math.round(p.price * 0.3);
-      document.getElementById('sum-name').textContent = p.sec && addSec() ? `${p.name} + ${addSec()} s (${p.sec + addSec()} secondi)` : p.name;
+      document.getElementById('sum-name').textContent = p.sec && addSec() ? (k > 1 ? `${p.name} · ${k} spot da ${p.sec + addSec()} secondi` : `${p.name} + ${addSec()} s (${p.sec + addSec()} secondi)`) : p.name;
       document.getElementById('sum-unit').textContent = p.unit ? 'Totale al mese' : 'Totale';
       animateTo(tot, document.getElementById('sum-total'));
       document.getElementById('sum-note').textContent = p.extras ? 'Prezzi IVA esclusa.' : 'Prezzi IVA esclusa. Gli extra sono disponibili sugli spot singoli.';
@@ -1104,7 +1110,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
         pay.textContent = p.unit ? `Attiva · ${fmtEUR(tot)}/mese` : `Paga ora · ${fmtEUR(tot)}`;
         const ref = [p.id, st.sec && `5secx${st.sec}`, st.sec10 && `10secx${st.sec10}`, st.rush && '48ore'].filter(Boolean).join('_');
         pay.href = `${link}?client_reference_id=${encodeURIComponent(ref.slice(0, 200))}&locale=it`;
-        pn.textContent = hasExtra ? `Pagamento sicuro con Stripe. Nel checkout, sotto il pacchetto, aggiungi gli extra che hai scelto qui${addSec() ? ` (${[st.sec && `«5 secondi in più» × ${st.sec}`, st.sec10 && `«10 secondi in più» × ${st.sec10}`].filter(Boolean).join(', ')})` : ''}.` : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
+        pn.textContent = hasExtra ? `Pagamento sicuro con Stripe. Nel checkout, sotto il pacchetto, aggiungi gli extra che hai scelto qui${addSec() ? ` (${[st.sec && `«5 secondi in più${p.spots ? ' su ogni spot' : ''}» × ${st.sec}`, st.sec10 && `«10 secondi in più${p.spots ? ' su ogni spot' : ''}» × ${st.sec10}`].filter(Boolean).join(', ')})` : ''}.` : 'Pagamento sicuro con Stripe (carta, Apple Pay, Google Pay). Ricevuta via email.';
       }
     }
     function setTab(tab, plan) {
@@ -1119,7 +1125,7 @@ dialog.dir::backdrop { background: rgba(0,0,0,.88); }
     document.querySelectorAll('.svc a[data-tab]').forEach(a => a.addEventListener('click', () => setTab(a.dataset.tab)));
     document.getElementById('sum-cta').addEventListener('click', () => {
       const p = current(), parts = [p.name];
-      if (addSec()) parts.push(`${addSec()} secondi in più (${p.sec + addSec()} secondi in tutto)`); if (st.rush) parts.push('consegna entro 48 ore');
+      if (addSec()) parts.push((p.spots || 1) > 1 ? `${addSec()} secondi in più su ogni spot (${p.spots} spot da ${p.sec + addSec()} secondi)` : `${addSec()} secondi in più (${p.sec + addSec()} secondi in tutto)`); if (st.rush) parts.push('consegna entro 48 ore');
       const msg = document.getElementById('f-msg');
       msg.value = `Vorrei un preventivo per: ${parts.join(', ')} (${document.getElementById('sum-total').textContent}${p.unit}).\n`;
       const map = { reel: 's1', cinema: 's1', cinema30: 's1', reelmese: 's1', cinemamese: 's1', completo: 's2', lumopro: 's2', landing: 's3' };
